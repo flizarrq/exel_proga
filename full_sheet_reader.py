@@ -1,4 +1,12 @@
+import time
+import warnings
 import openpyxl
+
+# Ignore the specific Data Validation warning
+warnings.filterwarnings("ignore", category=UserWarning, message="Data Validation extension is not supported and will be removed")
+
+# Start the timer
+start_time = time.time()
 
 # Open the source Excel file
 source_file = '!Кредитна_Заявка1.27_20_10_21 (6).xlsm'
@@ -39,6 +47,10 @@ destination_workbook.save(destination_file)
 # Close both workbooks
 source_workbook.close()
 destination_workbook.close()
+# Stop the timer
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Finished in {elapsed_time:.2f} seconds")
 
 
 
