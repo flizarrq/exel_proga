@@ -6,6 +6,7 @@ import os
 import shutil
 import time
 
+
 # Start the timer
 start_time = time.time()
 
@@ -15,6 +16,13 @@ warnings.filterwarnings("ignore", category=UserWarning, message="Data Validation
 source_folder = 'main'
 output_folder = 'new'
 
+# Get the total number of files
+total_files = sum(1 for root, _, files in os.walk(source_folder) for file in files if file.endswith('.xlsm'))
+
+processed_files = 0
+update_interval = 60  # Update progress every 1 minute
+last_update_time = time.time()
+
 # Recreate the output folder (delete and create it again)
 if os.path.exists(output_folder):
     shutil.rmtree(output_folder)
@@ -23,7 +31,7 @@ os.mkdir(output_folder)
 # Check any exel file in folder 'main' and other folders it contains
 for root, _, files in os.walk(source_folder):
     for source_file in files:
-        if source_file.endswith('.xlsm'):
+        if source_file.endswith('.xlsm') or source_file.endswith('.XLSM'):
             source_file_path = os.path.join(root, source_file)
 
             # Specify the source sheet name
@@ -208,6 +216,14 @@ for root, _, files in os.walk(source_folder):
             # Close both workbooks
             source_workbook.close()
             destination_workbook.close()
+
+            processed_files += 1
+
+            current_time = time.time()
+            if current_time - last_update_time >= update_interval:
+                progress = (processed_files / total_files) * 100
+                print(f"Progress: {progress:.2f}% ({processed_files}/{total_files} files)")
+                last_update_time = current_time
 # Stop the timer
 end_time = time.time()
 elapsed_time = end_time - start_time
